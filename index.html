@@ -734,7 +734,7 @@
         </div>
         <div class="header-right">
             <div class="balance-box">
-                <div class="balance-text">$<span id="user-balance">0.00</span></div>
+                <div class="balance-text">$<span id="user-balance">10.00</span></div>
             </div>
             <button class="deposit-btn" onclick="openDepositModal()">Deposit</button>
 
@@ -908,8 +908,8 @@
 
 <script>
     // System Global Variables
-    let userBalance = 0.00;
-    let gameState = 'WAITING';
+    let userBalance = 10.00; // Preset default balance so the button works right away
+    let gameState = 'FLYING';
     let currentMultiplier = 1.00;
     let targetCrashPoint = 5.00;
     let activeBet = false;
@@ -918,7 +918,6 @@
     let startTime = 0;
     let soundEnabled = true;
     let activeTab = 'All Bets';
-    let currentLivePlayersCount = 2168; // Starting base count
 
     const REQUIRED_TX_ID = "a7f3c91e5b824d06f14a9c73e68b2f105d47c8a91e3f6b02c54d7a89f016be32";
 
@@ -1256,15 +1255,10 @@
         }
     }
 
-    // Function to continuously increment and update the live player count badge on every new round
-    function incrementLivePlayersCount() {
+    function randomizeLivePlayersCount() {
         const countElem = document.getElementById('live-players-count');
-        // Increment the count by a random small amount between 5 and 25 on every round
-        const increment = Math.floor(5 + Math.random() * 21);
-        currentLivePlayersCount += increment;
-        
-        // Format with comma separator
-        countElem.innerText = currentLivePlayersCount.toLocaleString();
+        const randomCount = Math.floor(1800 + Math.random() * 1400);
+        countElem.innerText = randomCount.toLocaleString();
     }
 
     function startRound() {
@@ -1273,14 +1267,16 @@
         targetCrashPoint = parseFloat((1.20 + Math.random() * 28.00).toFixed(2));
         startTime = performance.now();
 
-        // Increment the live players count on each new round start
-        incrementLivePlayersCount();
+        randomizeLivePlayersCount();
 
         multDisplay.classList.remove('crashed');
 
         if (activeBet) {
             actionBtn.classList.add('cashout');
             btnLabelMain.innerText = 'CASH OUT';
+        } else {
+            actionBtn.classList.remove('cashout');
+            btnLabelMain.innerText = 'Bet';
         }
 
         startEngineSound();
@@ -1289,6 +1285,7 @@
     }
 
     function gameLoop(timestamp) {
+        if (gameState !== 'FLYING') return;
         const elapsed = (timestamp - startTime) / 1000;
         currentMultiplier = 1.00 + (elapsed * 0.35);
 
@@ -1389,8 +1386,8 @@
             gameState = 'WAITING';
             multDisplay.innerText = '1.00x';
             multDisplay.classList.remove('crashed');
-            setTimeout(startRound, 2000);
-        }, 2500);
+            setTimeout(startRound, 1500);
+        }, 2000);
     }
 
     function showToast(message) {
@@ -1406,23 +1403,26 @@
     function handleBetAction() {
         initAudioEngine();
 
-        if (!activeBet && gameState !== 'FLYING') {
-            if (userBalance <= 0) {
-                showToast('account balance empty.');
-                openDepositModal();
+        // If user hasn't placed a bet yet, place it for the current / next round
+        if (!activeBet) {
+            if (currentBetVal > userBalance) {
+                showToast('not enough balance');
                 return;
             }
 
-            if (userBalance >= currentBetVal) {
-                userBalance -= currentBetVal;
-                activeBet = true;
-                updateBalanceUI();
-                btnLabelMain.innerText = 'WAITING...';
+            userBalance -= currentBetVal;
+            activeBet = true;
+            updateBalanceUI();
+            
+            if (gameState === 'FLYING') {
+                actionBtn.classList.add('cashout');
+                btnLabelMain.innerText = 'CASH OUT';
             } else {
-                showToast('Insufficient Balance!');
-                openDepositModal();
+                btnLabelMain.innerText = 'WAITING...';
             }
-        } else if (activeBet && gameState === 'FLYING') {
+        } 
+        // If user already placed a bet and the plane is flying, trigger Cash Out
+        else if (activeBet && gameState === 'FLYING') {
             const winVal = currentBetVal * currentMultiplier;
             userBalance += winVal;
             activeBet = false;
@@ -1626,8 +1626,9 @@
         closeDepositModal();
     }
 
+    // Initialize application state
     updateBalanceUI();
-    setTimeout(startRound, 1000);
+    setTimeout(startRound, 500);
 </script>
 </body>
 </html>
