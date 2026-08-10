@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviator Live</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aviator Test System - Authentic UI</title>
     <style>
         * {
             box-sizing: border-box;
@@ -11,113 +11,342 @@
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: #0c0d10;
+            background-color: #000000;
             color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            padding: 10px;
         }
 
         .app-container {
             width: 100%;
-            max-width: 480px;
-            background-color: #14151b;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid #262832;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            max-width: 430px;
+            background-color: #101115;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            padding-bottom: 15px;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Top Header */
+        /* Top Header Navigation */
         .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
-            background-color: #1a1c24;
-            border-bottom: 1px solid #262832;
+            padding: 8px 10px;
+            background-color: #14151b;
+            border-bottom: 1px solid #1f2129;
+            z-index: 10;
+            width: 100%;
         }
 
-        .logo {
-            font-size: 22px;
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .back-icon {
+            font-size: 14px;
+            color: #8f94a6;
+            cursor: pointer;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .logo-icon {
+            width: 18px;
+            height: 18px;
+            background: #9b51e0;
+            border-radius: 5px;
+        }
+
+        .logo-text {
+            font-size: 16px;
             font-weight: 900;
             color: #e50914;
             font-style: italic;
             letter-spacing: -0.5px;
         }
 
-        .wallet-section {
+        .header-right {
             display: flex;
             align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .balance-box {
+            background: #0d0e12;
+            padding: 3px 6px;
+            border-radius: 6px;
+            border: 1px solid #232631;
+            text-align: right;
+        }
+
+        .balance-text {
+            font-size: 12px;
+            font-weight: 800;
+            color: #28a745;
+        }
+
+        .deposit-btn {
+            background: #28a745;
+            color: #ffffff;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 11px;
+            cursor: pointer;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: #9fA3b0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+        }
+
+        /* Hamburger Menu Side Drawer */
+        .menu-drawer {
+            position: absolute;
+            top: 0; right: -260px;
+            width: 240px;
+            height: 100%;
+            background: #14151b;
+            border-left: 1px solid #232631;
+            z-index: 90;
+            transition: right 0.3s ease;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.5);
+        }
+
+        .menu-drawer.open {
+            right: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #232631;
+            padding-bottom: 10px;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .drawer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 13px;
+            color: #d1d5db;
+        }
+
+        /* Sound Switch Controller */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 38px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0; height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #2b2e3b;
+            transition: .3s;
+            border-radius: 20px;
+            border: 1px solid #3d4152;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px; width: 14px;
+            left: 2px; bottom: 2px;
+            background-color: #28a745;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #1a1c23;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+            background-color: #6c757d;
+        }
+
+        /* Live Chat Drawer Overlay */
+        .chat-drawer {
+            position: absolute;
+            top: 48px; left: 0; right: 0; bottom: 0;
+            background: #0d0e12;
+            z-index: 80;
+            display: none;
+            flex-direction: column;
+        }
+
+        .chat-drawer.open {
+            display: flex;
+        }
+
+        .chat-header {
+            background: #181a21;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #232631;
+            font-size: 13px;
+        }
+
+        .online-count {
+            color: #28a745;
+            font-weight: 800;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
             gap: 10px;
         }
 
-        .balance-display {
-            font-size: 15px;
-            font-weight: 700;
+        .chat-msg {
+            background: #181a21;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            max-width: 85%;
+            align-self: flex-start;
+            border: 1px solid #232631;
+        }
+
+        .chat-msg.user-msg {
+            align-self: flex-end;
+            background: #1f271e;
+            border-color: #28a745;
+        }
+
+        .chat-user {
+            color: #9b51e0;
+            font-weight: 800;
+            font-size: 11px;
+            margin-bottom: 2px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .chat-user.user-tag {
             color: #28a745;
-            background: #0d2314;
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid #1e4d2b;
         }
 
-        .btn-deposit {
-            background-color: #28a745;
-            color: #fff;
+        .chat-time {
+            color: #787d8f;
+            font-weight: normal;
+            font-size: 10px;
+        }
+
+        .chat-text {
+            color: #ffffff;
+            word-break: break-word;
+        }
+
+        .chat-footer {
+            padding: 10px;
+            background: #14151b;
+            border-top: 1px solid #232631;
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #0d0e12;
+            border: 1px solid #232631;
+            border-radius: 20px;
+            padding: 8px 14px;
+            color: #ffffff;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .chat-send-btn {
+            background: #e50914;
             border: none;
-            padding: 6px 14px;
+            color: white;
+            padding: 0 14px;
             border-radius: 20px;
-            font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
+            font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
         }
 
-        .btn-deposit:hover {
-            background-color: #218838;
-        }
-
-        /* History Odds Bar */
+        /* Dynamic Multiplier History Bar */
         .history-bar {
             display: flex;
+            align-items: center;
             gap: 6px;
-            padding: 4px 12px;
+            padding: 6px 12px;
+            background: #090a0d;
             overflow-x: auto;
             scrollbar-width: none;
         }
 
         .history-pill {
             font-size: 11px;
-            font-weight: 700;
-            padding: 3px 8px;
+            font-weight: 800;
+            padding: 2px 8px;
             border-radius: 10px;
-            background-color: #222531;
+            background-color: #1a1c23;
             white-space: nowrap;
         }
 
-        .pill-high { color: #9b59b6; }
-        .pill-ultra { color: #e74c3c; }
+        .pill-blue { color: #28a745; }
+        .pill-purple { color: #c056ff; font-weight: 900; }
 
-        /* Canvas Stage */
+        /* Game Stage Canvas */
         .game-stage {
             position: relative;
-            width: calc(100% - 20px);
-            margin: 0 10px;
-            height: 210px;
-            background: radial-gradient(circle at bottom left, #2c0914 0%, #0e0f12 70%);
-            border-radius: 12px;
+            width: 100%;
+            height: 220px;
+            background: #000000;
             overflow: hidden;
-            border: 1px solid #262832;
+            border-bottom: 2px solid #1f2129;
         }
 
         canvas {
@@ -126,520 +355,871 @@
             display: block;
         }
 
-        .multiplier-text {
+        .multiplier-display {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 46px;
+            font-size: 52px;
             font-weight: 900;
             color: #ffffff;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.7);
             pointer-events: none;
+            z-index: 5;
+            letter-spacing: -1px;
         }
 
-        .crashed-text {
-            color: #e50914 !important;
+        .multiplier-display.crashed {
+            color: #e50914;
         }
 
-        /* Betting Panels */
-        .bet-panels-container {
+        .live-players-badge {
+            position: absolute;
+            bottom: 12px; right: 12px;
+            background: rgba(20, 21, 27, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            backdrop-filter: blur(4px);
+        }
+
+        .avatar-group {
+            display: flex;
+            margin-right: 2px;
+        }
+
+        .avatar-img {
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            border: 1px solid #101115;
+            margin-left: -5px;
+        }
+
+        /* Betting Controls Container */
+        .betting-section {
+            padding: 10px;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            padding: 0 10px;
+            background-color: #101115;
         }
 
         .bet-card {
-            background-color: #1a1c23;
-            border-radius: 12px;
+            background-color: #181a21;
+            border-radius: 14px;
             padding: 10px;
-            border: 1px solid #282a36;
+            border: 1px solid #232631;
             display: flex;
             gap: 10px;
         }
 
-        .bet-controls {
+        .bet-controls-left {
             flex: 1;
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
 
-        .amount-input-group {
+        .bet-tab-toggle {
+            display: flex;
+            background: #0d0e12;
+            border-radius: 20px;
+            padding: 2px;
+            width: 110px;
+            margin: 0 auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 0;
+            border-radius: 16px;
+            color: #787d8f;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: #232631;
+            color: #ffffff;
+        }
+
+        .amount-input-row {
             display: flex;
             align-items: center;
-            background-color: #0e0f12;
+            justify-content: space-between;
+            background-color: #0d0e12;
             border-radius: 20px;
-            padding: 2px 6px;
-            border: 1px solid #282a36;
+            padding: 2px 8px;
         }
 
         .btn-step {
-            background: #222531;
-            color: #fff;
+            background: #232631;
+            color: #ffffff;
             border: none;
-            width: 26px;
-            height: 26px;
+            width: 24px; height: 24px;
             border-radius: 50%;
             font-weight: bold;
+            font-size: 14px;
             cursor: pointer;
         }
 
-        .bet-input {
-            width: 100%;
+        .input-val {
             background: transparent;
             border: none;
-            color: #fff;
+            color: #ffffff;
             text-align: center;
             font-size: 15px;
-            font-weight: 700;
+            font-weight: 800;
+            width: 80px;
             outline: none;
         }
 
-        .quick-amounts {
+        .quick-chips-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 4px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
         }
 
-        .btn-quick {
-            background: #222531;
+        .chip-btn {
+            background: #20232d;
             border: none;
-            color: #a0a5b5;
-            padding: 4px 0;
-            border-radius: 6px;
+            color: #9fA3b0;
+            padding: 5px 0;
+            border-radius: 10px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
         }
 
-        .btn-action {
-            width: 110px;
+        .btn-main-action {
+            width: 120px;
             background-color: #28a745;
             border: none;
-            border-radius: 10px;
+            border-radius: 14px;
             color: white;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: background-color 0.2s;
-            padding: 6px;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            transition: transform 0.1s;
         }
 
-        .btn-action.cashout {
+        .btn-main-action:active {
+            transform: scale(0.98);
+        }
+
+        .btn-main-action.cashout {
             background-color: #d39e00;
+            box-shadow: 0 4px 12px rgba(211, 158, 0, 0.3);
         }
 
-        .btn-action .main-lbl {
-            font-size: 15px;
+        .action-primary {
+            font-size: 16px;
             font-weight: 800;
-            text-transform: uppercase;
         }
 
-        .btn-action .sub-lbl {
+        .action-secondary {
             font-size: 12px;
             font-weight: 700;
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
-        /* Tabs & Table Section */
-        .info-section {
-            margin: 0 10px;
-            background-color: #1a1c23;
-            border-radius: 12px;
-            border: 1px solid #282a36;
-            overflow: hidden;
-        }
-
-        .nav-tabs {
-            display: flex;
+        /* Live Players & Leaderboard Table */
+        .stats-section {
             background-color: #14151b;
-            border-bottom: 1px solid #282a36;
+            border-top: 1px solid #1f2129;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .nav-tab {
+        .stats-tabs {
+            display: flex;
+            border-bottom: 1px solid #1f2129;
+            background-color: #0d0e12;
+        }
+
+        .stats-tab {
             flex: 1;
             text-align: center;
-            padding: 10px 0;
+            padding: 8px 0;
             font-size: 12px;
             font-weight: 700;
-            color: #717585;
+            color: #787d8f;
             cursor: pointer;
         }
 
-        .nav-tab.active {
+        .stats-tab.active {
             color: #ffffff;
             border-bottom: 2px solid #e50914;
-            background-color: #1a1c23;
+            background-color: #14151b;
         }
 
-        .tab-content {
-            padding: 8px;
-            height: 220px;
-            overflow-y: auto;
-            scrollbar-width: thin;
+        .total-win-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: #181a21;
+            font-size: 11px;
+            color: #9fA3b0;
+            border-bottom: 1px solid #232631;
         }
 
-        .bets-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
+        .win-amount {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
         }
 
-        .bets-table th {
-            color: #717585;
-            text-align: left;
-            padding: 6px 4px;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            background: #1a1c23;
-        }
-
-        .bets-table td {
-            padding: 6px 4px;
-            border-bottom: 1px solid #222531;
-        }
-
-        .col-user { color: #a0a5b5; font-weight: 600; }
-        .col-mult { color: #9b59b6; font-weight: 700; }
-        .col-win { color: #28a745; font-weight: 700; }
-
-        /* Interactive Live Chat System */
-        .chat-container {
+        .players-list {
+            padding: 6px 12px;
             display: flex;
             flex-direction: column;
-            height: 100%;
-        }
-
-        .chat-box {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-
-        .chat-msg {
-            background: #222531;
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .chat-msg.user-msg {
-            background: #1e3a29;
-            border-left: 3px solid #28a745;
-        }
-
-        .chat-user {
-            color: #e50914;
-            font-weight: 700;
-            margin-right: 4px;
-        }
-
-        .chat-msg.user-msg .chat-user {
-            color: #28a745;
-        }
-
-        .chat-input-area {
-            display: flex;
             gap: 6px;
-            margin-top: 8px;
-            padding-top: 6px;
-            border-top: 1px solid #282a36;
+            max-height: 220px;
+            overflow-y: auto;
         }
 
-        .chat-input {
-            flex: 1;
-            background: #0e0f12;
-            border: 1px solid #282a36;
-            color: #fff;
-            padding: 8px 10px;
+        .player-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #181a21;
+            padding: 6px 8px;
             border-radius: 6px;
-            font-size: 12px;
-            outline: none;
+            font-size: 11px;
         }
 
-        .btn-chat-send {
-            background: #e50914;
-            color: #fff;
-            border: none;
-            padding: 0 14px;
-            border-radius: 6px;
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 32%;
+        }
+
+        .player-rank {
+            font-weight: 800;
+            color: #ffaa00;
+            width: 24px;
+        }
+
+        .player-avatar {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background-color: #3d4152;
+        }
+
+        .player-name {
+            color: #9fA3b0;
+            font-weight: 600;
+        }
+
+        .player-bet {
+            color: #ffffff;
             font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
+            width: 28%;
+            text-align: right;
         }
 
-        /* Multi-step USDT Deposit Modal */
+        .player-mult {
+            color: #c056ff;
+            font-weight: 800;
+            width: 18%;
+            text-align: right;
+        }
+
+        .player-win {
+            color: #28a745;
+            font-weight: 800;
+            width: 25%;
+            text-align: right;
+        }
+
+        /* Modal Overlay for Deposit Flow */
         .modal-overlay {
-            position: fixed;
+            position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.85);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            padding: 16px;
         }
 
         .modal-card {
-            background: #1a1c23;
-            border: 1px solid #282a36;
-            width: 90%;
-            max-width: 380px;
-            border-radius: 16px;
-            padding: 20px;
+            background: #181a21;
+            border: 1px solid #28a745;
+            border-radius: 14px;
+            padding: 16px;
+            width: 100%;
+            max-width: 360px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
-            color: #fff;
+            color: #ffffff;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .modal-close {
+            color: #787d8f;
             cursor: pointer;
-            color: #717585;
+            font-size: 18px;
         }
 
-        .network-badge {
-            background: #222531;
-            color: #00d2ff;
-            padding: 6px 10px;
-            border-radius: 6px;
+        .modal-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .modal-label {
             font-size: 11px;
+            color: #9fA3b0;
             font-weight: 700;
-            text-align: center;
         }
 
         .modal-input {
-            width: 100%;
-            background: #0e0f12;
-            border: 1px solid #282a36;
-            color: #fff;
-            padding: 10px;
+            background: #0d0e12;
+            border: 1px solid #232631;
             border-radius: 8px;
+            padding: 10px;
+            color: #ffffff;
             font-size: 13px;
             outline: none;
         }
 
-        /* Easily Copyable Address Layout */
-        .address-container {
+        .network-tag {
+            text-align: center;
+            font-size: 12px;
+            color: #9fA3b0;
+            margin-bottom: 2px;
+        }
+
+        .network-tag strong {
+            color: #ffffff;
+        }
+
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 14px;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 4px auto;
+        }
+
+        .qr-code-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .wallet-address-card {
+            background: #e9ecef;
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .address-details {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            background: #0e0f12;
-            border: 1px solid #28a745;
-            padding: 10px;
-            border-radius: 8px;
+            gap: 2px;
+            width: 82%;
         }
 
-        .address-box {
-            font-size: 12px;
-            color: #28a745;
-            word-break: break-all;
-            text-align: center;
-            font-family: monospace;
-            font-weight: bold;
-        }
-
-        .btn-copy {
-            background: #282a36;
-            color: #fff;
-            border: 1px solid #3a3f50;
-            padding: 6px;
-            border-radius: 6px;
+        .wallet-label {
             font-size: 11px;
             font-weight: 700;
+            color: #6c757d;
+        }
+
+        .wallet-value {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: #111111;
+            word-break: break-all;
+            line-height: 1.2;
+        }
+
+        .copy-btn {
+            background: #dcdfe3;
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: 0.2s;
+            flex-shrink: 0;
         }
 
-        .btn-copy:hover {
-            background: #34384a;
-        }
-
-        .timer-box {
-            font-size: 13px;
-            font-weight: 700;
-            color: #d39e00;
-            text-align: center;
-            background: #222531;
-            padding: 6px;
+        .timer-badge {
+            background: rgba(229, 9, 20, 0.15);
+            color: #e50914;
+            border: 1px solid rgba(229, 9, 20, 0.3);
             border-radius: 6px;
+            padding: 6px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 800;
         }
 
-        .btn-modal {
+        .modal-btn {
             background: #28a745;
-            color: #fff;
+            color: white;
             border: none;
             padding: 12px;
             border-radius: 8px;
+            font-size: 14px;
             font-weight: 800;
             cursor: pointer;
-            font-size: 14px;
-        }
-
-        .error-msg {
-            color: #e50914;
-            font-size: 11px;
-            display: none;
-            font-weight: 600;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Header Bar -->
+    <!-- Responsive Header Navigation -->
     <div class="top-bar">
-        <div class="logo">Aviator</div>
-        <div class="wallet-section">
-            <div class="balance-display" id="user-balance">$0.00</div>
-            <button class="btn-deposit" onclick="openDepositModal()">Deposit</button>
-        </div>
-    </div>
-
-    <!-- History Odds Bar -->
-    <div class="history-bar" id="history-bar">
-        <span class="history-pill pill-ultra">142.50x</span>
-        <span class="history-pill pill-high">88.20x</span>
-        <span class="history-pill pill-ultra">210.15x</span>
-        <span class="history-pill pill-high">54.30x</span>
-        <span class="history-pill pill-ultra">315.00x</span>
-        <span class="history-pill pill-high">95.40x</span>
-    </div>
-
-    <!-- Animation Stage -->
-    <div class="game-stage">
-        <canvas id="aviatorCanvas"></canvas>
-        <div class="multiplier-text" id="multiplier-display">1.00x</div>
-    </div>
-
-    <!-- Betting Controls -->
-    <div class="bet-panels-container">
-        <div class="bet-card">
-            <div class="bet-controls">
-                <div class="amount-input-group">
-                    <button class="btn-step" onclick="adjustBet(-1)">-</button>
-                    <input type="number" id="bet-input" class="bet-input" value="10.00" step="1">
-                    <button class="btn-step" onclick="adjustBet(1)">+</button>
-                </div>
-                <div class="quick-amounts">
-                    <button class="btn-quick" onclick="setBet(5)">$5</button>
-                    <button class="btn-quick" onclick="setBet(10)">$10</button>
-                    <button class="btn-quick" onclick="setBet(20)">$20</button>
-                    <button class="btn-quick" onclick="setBet(50)">$50</button>
-                </div>
+        <div class="header-left">
+            <span class="back-icon">❮</span>
+            <div class="logo-box">
+                <div class="logo-icon"></div>
+                <div class="logo-text">Aviator</div>
             </div>
-            <button class="btn-action" id="action-btn" onclick="handleBetClick()">
-                <span class="main-lbl" id="btn-lbl">PLAY BET</span>
-                <span class="sub-lbl" id="btn-sub">$10.00</span>
+        </div>
+        <div class="header-right">
+            <div class="balance-box">
+                <!-- Initial Balance locked at $0.00 -->
+                <div class="balance-text">$<span id="user-balance">0.00</span></div>
+            </div>
+            <button class="deposit-btn" onclick="openDepositModal()">Deposit</button>
+
+            <!-- SVG Chat Icon -->
+            <button class="icon-btn" onclick="toggleChatDrawer()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9fA3b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </button>
+
+            <!-- Hamburger Menu Button -->
+            <button class="icon-btn" onclick="toggleMenuDrawer()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
             </button>
         </div>
     </div>
 
-    <!-- Navigation Tabs & Tables -->
-    <div class="info-section">
-        <div class="nav-tabs">
-            <div class="nav-tab active" id="tab-btn-bets" onclick="switchTab('bets')">Live Players</div>
-            <div class="nav-tab" id="tab-btn-chat" onclick="switchTab('chat')">Chat</div>
+    <!-- Slide-out Hamburger Menu -->
+    <div class="menu-drawer" id="menu-drawer">
+        <div class="drawer-header">
+            <span>Game Settings</span>
+            <span style="cursor:pointer;" onclick="toggleMenuDrawer()">✕</span>
         </div>
-
-        <!-- Live Players Tab -->
-        <div class="tab-content" id="tab-bets">
-            <table class="bets-table">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Bet ($)</th>
-                        <th>Odds</th>
-                        <th>Win ($)</th>
-                    </tr>
-                </thead>
-                <tbody id="bets-tbody">
-                    <!-- Dynamic live rows -->
-                </tbody>
-            </table>
+        <div class="drawer-item">
+            <span>Sound Effects</span>
+            <label class="switch">
+                <input type="checkbox" id="sound-toggle" onchange="handleSoundToggle(this)">
+                <span class="slider"></span>
+            </label>
         </div>
+        <div class="drawer-item">
+            <span>Provably Fair</span>
+            <span style="color:#28a745; font-weight:bold;">Active</span>
+        </div>
+    </div>
 
-        <!-- Interactive Chat Tab -->
-        <div class="tab-content" id="tab-chat" style="display: none;">
-            <div class="chat-container">
-                <div class="chat-box" id="chat-box">
-                    <!-- Pre-seeded Chat Messages -->
+    <!-- Live Social Chat Drawer -->
+    <div class="chat-drawer" id="chat-drawer">
+        <div class="chat-header">
+            <div>Live Chat <span class="online-count">Online: 2416</span></div>
+            <span style="cursor:pointer;" onclick="toggleChatDrawer()">✕</span>
+        </div>
+        <div class="chat-body" id="chat-body"></div>
+        <div class="chat-footer">
+            <input type="text" id="chat-input-field" class="chat-input" placeholder="Send a message..." onkeypress="handleChatKeyPress(event)">
+            <button class="chat-send-btn" onclick="sendUserMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Dynamic Multiplier History Bar with High Historical Multipliers -->
+    <div class="history-bar" id="history-bar">
+        <span class="history-pill pill-purple">200.00x</span>
+        <span class="history-pill pill-purple">95.00x</span>
+        <span class="history-pill pill-purple">80.00x</span>
+        <span class="history-pill pill-purple">60.00x</span>
+        <span class="history-pill pill-purple">18.40x</span>
+        <span class="history-pill pill-purple">7.20x</span>
+    </div>
+
+    <!-- Flight Stage Canvas -->
+    <div class="game-stage">
+        <canvas id="aviatorCanvas"></canvas>
+        <div class="multiplier-display" id="multiplier-display">1.00x</div>
+        <div class="live-players-badge">
+            <div class="avatar-group">
+                <div class="avatar-img" style="background:#00d2ff;"></div>
+                <div class="avatar-img" style="background:#e50914;"></div>
+                <div class="avatar-img" style="background:#ff9900;"></div>
+            </div>
+            <span>2,168</span>
+        </div>
+    </div>
+
+    <!-- Bet Controller -->
+    <div class="betting-section">
+        <div class="bet-card">
+            <div class="bet-controls-left">
+                <div class="bet-tab-toggle">
+                    <div class="tab-btn active">Bet</div>
+                    <div class="tab-btn">Auto</div>
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" id="user-chat-input" class="chat-input" placeholder="Write a message..." onkeydown="handleChatKey(event)">
-                    <button class="btn-chat-send" onclick="sendUserMessage()">Send</button>
+                <div class="amount-input-row">
+                    <button class="btn-step" onclick="adjustBet(-1.00)">-</button>
+                    <input type="text" id="bet-input" class="input-val" value="1.00" readonly>
+                    <button class="btn-step" onclick="adjustBet(1.00)">+</button>
                 </div>
+                <div class="quick-chips-grid">
+                    <button class="chip-btn" onclick="setBet(1.00)">$1.00</button>
+                    <button class="chip-btn" onclick="setBet(2.00)">$2.00</button>
+                    <button class="chip-btn" onclick="setBet(5.00)">$5.00</button>
+                    <button class="chip-btn" onclick="setBet(10.00)">$10.00</button>
+                </div>
+            </div>
+            <button class="btn-main-action" id="action-btn" onclick="handleBetAction()">
+                <span class="action-primary" id="btn-label-main">Bet</span>
+                <span class="action-secondary" id="btn-label-sub">$1.00</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Live Players / Leaderboard Table Section -->
+    <div class="stats-section">
+        <div class="stats-tabs">
+            <div class="stats-tab active" id="tab-all" onclick="selectStatsTab('All Bets')">All Bets</div>
+            <div class="stats-tab" id="tab-prev" onclick="selectStatsTab('Previous')">Previous</div>
+            <div class="stats-tab" id="tab-top" onclick="selectStatsTab('Top')">Top</div>
+        </div>
+        <div class="total-win-banner" id="win-banner">
+            <div>
+                <span style="font-size:11px;" id="banner-left-label">1847/5026 Bets</span>
+            </div>
+            <div>
+                <span class="win-amount">$<span id="total-win-sum">0.00</span></span>
+            </div>
+        </div>
+        <div class="players-list" id="players-list"></div>
+    </div>
+
+    <!-- Deposit Modal Flow -->
+    <div class="modal-overlay" id="deposit-modal">
+        <div class="modal-card">
+            <div class="modal-title">
+                <span>USDT TRC20 Deposit</span>
+                <span class="modal-close" onclick="closeDepositModal()">✕</span>
+            </div>
+
+            <!-- Step 1: Amount Input -->
+            <div id="deposit-step-1" class="modal-field">
+                <label class="modal-label">Deposit Amount (USD, Min $30.00)</label>
+                <input type="number" id="deposit-amount-input" class="modal-input" value="30.00" min="30">
+                <button class="modal-btn" style="margin-top:10px;" onclick="goToDepositStep2()">Next</button>
+            </div>
+
+            <!-- Step 2: Payment Details & Confirm Button -->
+            <div id="deposit-step-2" style="display:none;" class="modal-field">
+                <div class="network-tag">
+                    <span>Network:</span> <strong>TRON (TRC20) ▼</strong>
+                </div>
+
+                <div class="qr-container">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=TF55sWvus35oLhmWzcsvi4X2Z6u15wNyTN" alt="QR Code" class="qr-code-img">
+                </div>
+
+                <div class="wallet-address-card">
+                    <div class="address-details">
+                        <span class="wallet-label">Wallet Address</span>
+                        <div class="wallet-value" id="wallet-address-text">TF55sWvus35oLhmWzcsvi4X2Z6u15wNyTN</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyWalletAddress()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="timer-badge" style="margin-top:2px;">
+                    Time Remaining: <span id="deposit-timer">02:00:00</span>
+                </div>
+
+                <label class="modal-label" style="margin-top:4px;">Transaction ID / Hash (TxID)</label>
+                <input type="text" id="tx-id-input" class="modal-input" placeholder="Paste 64-character hash here">
+
+                <button class="modal-btn" style="margin-top:8px;" onclick="confirmDepositPayment()">Confirm deposit</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Multi-Step USDT Deposit Modal -->
-<div class="modal-overlay" id="deposit-modal">
-    <!-- Step 1: Input Amount (Minimum $30) -->
-    <div class="modal-card" id="modal-step-1">
-        <div class="modal-title">
-            <span>Deposit USDT</span>
-            <span class="modal-close" onclick="closeDepositModal()">&times;</span>
-        </div>
-        <div class="network-badge">Network: TRON (TRC20)</div>
-        <p style="font-size: 12px; color: #a0a5b5;">Enter deposit amount in USD (Minimum deposit is <strong>$30</strong>):</p>
-        <input type="number" id="deposit-amt-input" class="modal-input" placeholder="Amount ($30 minimum)" value="30">
-        <div class="error-msg" id="amt-error">Minimum deposit amount is $30.00!</div>
-        <button class="btn-modal" onclick="goToStep2()">Next</button>
-    </div>
-
-    <!-- Step 2: Wallet Address, Timer, & Transaction ID Confirmation -->
-    <div class="modal-card" id="modal-step-2" style="display: none;">
-        <div class="modal-title">
-            <span>Payment Confirmation</span>
-            <span class="modal-close" onclick="closeDepositModal()">&times;</span>
-        </div>
-        <div class="network-badge">Network: TRON (TRC20)</div>
-        <p style="font-size: 12px; color: #a0a5b5;">Transfer exact USDT amount to the address below:</p>
-        
-        <div class="address-container">
-            <div class="address-box" id="usdt-address">TF55sWvus35oLhmWzcsvi4X2Z6u15wNyTN</div>
-            <button class="btn-copy" id="btn-copy-addr" onclick="copyAddress()">📋 Copy Address</button>
-        </div>
-
-        <div class="timer-box">Time Remaining: <span id="timer-display">02:00:00</span></div>
-
-        <p style="font-size: 12px; color: #a0a5b5; margin-top: 2px;">Enter your Transaction ID (TxHash) below to confirm payment:</p>
-        <input type="text" id="tx-id-input" class="modal-input" placeholder="Paste Transaction ID (TxHash) here...">
-        <div class="error-msg" id="tx-error">Please enter a valid Transaction ID!</div>
-
-        <button class="btn-modal" onclick="confirmDeposit()">Confirm Deposit</button>
-    </div>
-</div>
-
 <script>
-    // System State
+    // 1. Initial Balance set to $0.00 until deposit is made
     let userBalance = 0.00;
     let gameState = 'WAITING';
     let currentMultiplier = 1.00;
-    let targetCrashPoint = 1.00;
+    let targetCrashPoint = 5.00; // Default minimum 5.0x
     let activeBet = false;
-    let betAmount = 10.00;
+    let currentBetVal = 1.00;
     let startTime = 0;
+    let soundEnabled = true;
+    let activeTab = 'All Bets';
 
-    // Canvas Initialization
+    // Web Audio Engine
+    let audioCtx = null;
+    let humOsc = null;
+    let humGain = null;
+    let subOsc = null;
+
+    function initAudioEngine() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    function handleSoundToggle(checkbox) {
+        soundEnabled = !checkbox.checked;
+        if (!soundEnabled) {
+            stopEngineSound();
+        } else if (gameState === 'FLYING') {
+            startEngineSound();
+        }
+    }
+
+    function startEngineSound() {
+        if (!soundEnabled) return;
+        initAudioEngine();
+
+        try {
+            humOsc = audioCtx.createOscillator();
+            humGain = audioCtx.createGain();
+            subOsc = audioCtx.createOscillator();
+
+            humOsc.type = 'triangle';
+            subOsc.type = 'sine';
+
+            humOsc.frequency.setValueAtTime(140, audioCtx.currentTime);
+            subOsc.frequency.setValueAtTime(60, audioCtx.currentTime);
+
+            humGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+            humOsc.connect(humGain);
+            subOsc.connect(humGain);
+            humGain.connect(audioCtx.destination);
+
+            humOsc.start();
+            subOsc.start();
+        } catch (e) {}
+    }
+
+    function updateEnginePitch(mult) {
+        if (humOsc && subOsc && soundEnabled && audioCtx) {
+            const freq = 140 + (mult * 45);
+            humOsc.frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.1);
+            subOsc.frequency.setTargetAtTime(60 + (mult * 15), audioCtx.currentTime, 0.1);
+        }
+    }
+
+    function stopEngineSound() {
+        if (humGain && audioCtx) {
+            try {
+                humGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
+                setTimeout(() => {
+                    if (humOsc) { humOsc.stop(); humOsc.disconnect(); humOsc = null; }
+                    if (subOsc) { subOsc.stop(); subOsc.disconnect(); subOsc = null; }
+                }, 100);
+            } catch (e) {}
+        }
+    }
+
+    function playCashoutSound() {
+        if (!soundEnabled) return;
+        initAudioEngine();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(880.00, audioCtx.currentTime + 0.08);
+
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+    }
+
+    function playCrashSound() {
+        if (!soundEnabled) return;
+        initAudioEngine();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.25);
+
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.25);
+    }
+
+    // UI Drawer Toggles
+    function toggleMenuDrawer() {
+        document.getElementById('menu-drawer').classList.toggle('open');
+    }
+
+    function toggleChatDrawer() {
+        document.getElementById('chat-drawer').classList.toggle('open');
+    }
+
+    // 2. Non-Repeating Chat System Logic
+    const chatBody = document.getElementById('chat-body');
+    const playerNames = ['9***0', '2***e', '7***6', 'c***6', 'd***4', 'f***1', 'a***8', 'k***2'];
+    
+    // Master Unique Chat Messages Pool
+    const masterChatPool = [
+        "If 5x odd drop, we go celebrate captain",
+        "ALL HACKERS SEE THE WAY AVIATOR IS FLYING OK",
+        "Going high today 🔥",
+        "Boom! Cash out secured",
+        "Play again guys, big multiplier coming",
+        "Holding out for 50x target minimum",
+        "Never seen green multipliers like this before",
+        "2***8 is on a massive winning streak!",
+        "Who else hit that previous 200x?",
+        "Solid cashout, thanks captain!"
+    ];
+
+    let usedChatSet = new Set();
+
+    function appendChatMessage(username, text, isUser = false) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `chat-msg ${isUser ? 'user-msg' : ''}`;
+        
+        const now = new Date();
+        const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+        msgDiv.innerHTML = `
+            <div class="chat-user ${isUser ? 'user-tag' : ''}">
+                <span>${username}</span>
+                <span class="chat-time">${timeStr}</span>
+            </div>
+            <div class="chat-text">${text}</div>
+        `;
+        chatBody.appendChild(msgDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    // Initial Chat Setup (Unique, non-repeating)
+    appendChatMessage('9***0', 'If k odd drop Werti go happen captain');
+    appendChatMessage('2***e', 'ALL HACKERS SEE THE WAY AVIATOR ARE HACKING MY FUNDS OK');
+    appendChatMessage('7***6', 'Going 💕');
+
+    // Continuous Stream (Guaranteed Non-Repeating)
+    setInterval(() => {
+        if (usedChatSet.size >= masterChatPool.length) {
+            usedChatSet.clear(); // Reset pool when all unique messages sent
+        }
+
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * masterChatPool.length);
+        } while (usedChatSet.has(randomIndex));
+
+        usedChatSet.add(randomIndex);
+
+        const randomUser = playerNames[Math.floor(Math.random() * playerNames.length)];
+        appendChatMessage(randomUser, masterChatPool[randomIndex]);
+    }, 5000);
+
+    function sendUserMessage() {
+        const input = document.getElementById('chat-input-field');
+        const text = input.value.trim();
+        if (text === '') return;
+
+        appendChatMessage('6****3', text, true);
+        input.value = '';
+
+        setTimeout(() => {
+            const replier = playerNames[Math.floor(Math.random() * playerNames.length)];
+            const replies = [
+                `@6****3 true bro!`,
+                `@6****3 let us win together`,
+                `@6****3 boom 🔥`,
+                `@6****3 drop number make we chat`
+            ];
+            const randomReply = replies[Math.floor(Math.random() * replies.length)];
+            appendChatMessage(replier, randomReply);
+        }, 2200);
+    }
+
+    function handleChatKeyPress(e) {
+        if (e.key === 'Enter') sendUserMessage();
+    }
+
+    // Copy Address Helper
+    function copyWalletAddress() {
+        const addr = document.getElementById('wallet-address-text').innerText;
+        navigator.clipboard.writeText(addr).then(() => {
+            alert('Wallet Address copied to clipboard!');
+        }).catch(() => {
+            alert('Address: ' + addr);
+        });
+    }
+
+    // Canvas Visual Engine
     const canvas = document.getElementById('aviatorCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -650,66 +1230,124 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // DOM Elements
-    const balanceEl = document.getElementById('user-balance');
-    const multDisplay = document.getElementById('multiplier-display');
-    const actionBtn = document.getElementById('action-btn');
-    const btnLbl = document.getElementById('btn-lbl');
-    const btnSub = document.getElementById('btn-sub');
+    function drawSunburstBackground() {
+        const w = canvas.width;
+        const h = canvas.height;
 
-    function updateBalanceUI() {
-        balanceEl.innerText = `$${userBalance.toFixed(2)}`;
+        ctx.fillStyle = '#0a0a0d';
+        ctx.fillRect(0, 0, w, h);
+
+        const bgGrad = ctx.createRadialGradient(0, h, 10, 0, h, Math.max(w, h));
+        bgGrad.addColorStop(0, 'rgba(180, 10, 20, 0.35)');
+        bgGrad.addColorStop(0.5, 'rgba(80, 5, 10, 0.15)');
+        bgGrad.addColorStop(1, 'rgba(10, 10, 13, 1)');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.translate(0, h);
+        ctx.fillStyle = 'rgba(229, 9, 20, 0.04)';
+        const rays = 12;
+        const angleStep = (Math.PI / 2) / rays;
+
+        for (let i = 0; i < rays; i += 2) {
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.arc(0, 0, Math.max(w, h) * 1.5, i * angleStep, (i + 1) * angleStep);
+            ctx.closePath();
+            ctx.fill();
+        }
+        ctx.restore();
     }
 
-    // Input Adjusters
+    function drawSpribePlane(x, y, angle) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+
+        ctx.fillStyle = '#e50914';
+        
+        ctx.beginPath();
+        ctx.moveTo(-10, 0);
+        ctx.lineTo(-2, -12);
+        ctx.lineTo(6, -12);
+        ctx.lineTo(2, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(-10, 0);
+        ctx.lineTo(-2, 12);
+        ctx.lineTo(6, 12);
+        ctx.lineTo(2, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 16, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.ellipse(4, -1, 4, 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(16, 0, 8, -Math.PI / 2, Math.PI / 2);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    const multDisplay = document.getElementById('multiplier-display');
+    const actionBtn = document.getElementById('action-btn');
+    const btnLabelMain = document.getElementById('btn-label-main');
+    const btnLabelSub = document.getElementById('btn-label-sub');
+
+    function updateBalanceUI() {
+        document.getElementById('user-balance').innerText = userBalance.toFixed(2);
+    }
+
     function adjustBet(delta) {
-        const input = document.getElementById('bet-input');
-        let val = parseFloat(input.value) || 0;
-        val = Math.max(1, val + delta);
-        input.value = val.toFixed(2);
-        updateSubLabel();
+        if (activeBet || gameState === 'FLYING') return;
+        currentBetVal = Math.max(1.00, currentBetVal + delta);
+        document.getElementById('bet-input').value = currentBetVal.toFixed(2);
+        btnLabelSub.innerText = `$${currentBetVal.toFixed(2)}`;
     }
 
     function setBet(val) {
-        document.getElementById('bet-input').value = val.toFixed(2);
-        updateSubLabel();
+        if (activeBet || gameState === 'FLYING') return;
+        currentBetVal = val;
+        document.getElementById('bet-input').value = currentBetVal.toFixed(2);
+        btnLabelSub.innerText = `$${currentBetVal.toFixed(2)}`;
     }
 
-    function updateSubLabel() {
-        if (!activeBet) {
-            btnSub.innerText = `$${parseFloat(document.getElementById('bet-input').value).toFixed(2)}`;
-        }
-    }
-    document.getElementById('bet-input').addEventListener('input', updateSubLabel);
-
-    // Multiplier Odds Generator (Max 4x - 5x)
-    function generateSlowOdds() {
-        return parseFloat((1.10 + Math.random() * 2.70).toFixed(2));
-    }
-
-    // Main Game Loop
+    // 3. Live Round Multiplier Enforcing Minimum 5.0x
     function startRound() {
         gameState = 'FLYING';
         currentMultiplier = 1.00;
-        targetCrashPoint = generateSlowOdds();
+        
+        // Calculated to strictly hit AT LEAST 5.00x minimum
+        targetCrashPoint = parseFloat((5.00 + Math.random() * 25.00).toFixed(2));
         startTime = performance.now();
-        
-        multDisplay.classList.remove('crashed-text');
-        
+
+        multDisplay.classList.remove('crashed');
+
         if (activeBet) {
             actionBtn.classList.add('cashout');
-            btnLbl.innerText = 'CASH OUT';
+            btnLabelMain.innerText = 'CASH OUT';
         }
 
-        generateLivePlayers();
+        startEngineSound();
+        generateMockPlayers();
         requestAnimationFrame(gameLoop);
     }
 
     function gameLoop(timestamp) {
         const elapsed = (timestamp - startTime) / 1000;
-        
-        // Slow multiplier trajectory speed
-        currentMultiplier = 1.00 + (elapsed * 0.18);
+        currentMultiplier = 1.00 + (elapsed * 0.35);
 
         if (currentMultiplier >= targetCrashPoint) {
             triggerCrash();
@@ -717,323 +1355,302 @@
         }
 
         multDisplay.innerText = `${currentMultiplier.toFixed(2)}x`;
-        
+        updateEnginePitch(currentMultiplier);
+
         if (activeBet) {
-            btnSub.innerText = `$${(betAmount * currentMultiplier).toFixed(2)}`;
+            btnLabelSub.innerText = `$${(currentBetVal * currentMultiplier).toFixed(2)}`;
         }
 
-        simulateLiveWins(currentMultiplier);
-        drawFlightPath(elapsed);
+        renderStage(elapsed);
+        if (activeTab === 'All Bets') {
+            updateLiveTable(currentMultiplier);
+        }
         requestAnimationFrame(gameLoop);
     }
 
-    function triggerCrash() {
-        gameState = 'CRASHED';
-        multDisplay.innerText = `${targetCrashPoint.toFixed(2)}x`;
-        multDisplay.classList.add('crashed-text');
+    function renderStage(elapsed) {
+        drawSunburstBackground();
 
-        if (activeBet) {
-            activeBet = false;
-            actionBtn.classList.remove('cashout');
-            btnLbl.innerText = 'PLAY BET';
-            updateSubLabel();
-        }
-
-        drawCrashCanvas();
-
-        setTimeout(() => {
-            gameState = 'WAITING';
-            multDisplay.innerText = 'WAITING...';
-            multDisplay.classList.remove('crashed-text');
-            setTimeout(startRound, 2500);
-        }, 3000);
-    }
-
-    function handleBetClick() {
-        const val = parseFloat(document.getElementById('bet-input').value);
-
-        if (!activeBet && gameState !== 'FLYING') {
-            if (userBalance >= val) {
-                userBalance -= val;
-                betAmount = val;
-                activeBet = true;
-                updateBalanceUI();
-                btnLbl.innerText = 'WAITING...';
-            } else {
-                alert('Balance zero or insufficient! Please click Deposit to top up ($30 min).');
-            }
-        } else if (activeBet && gameState === 'FLYING') {
-            const winnings = betAmount * currentMultiplier;
-            userBalance += winnings;
-            activeBet = false;
-            updateBalanceUI();
-            
-            actionBtn.classList.remove('cashout');
-            btnLbl.innerText = 'PLAY BET';
-            updateSubLabel();
-            alert(`Cashed out at ${currentMultiplier.toFixed(2)}x! Won $${winnings.toFixed(2)}`);
-        }
-    }
-
-    // Canvas Graphics
-    function drawFlightPath(elapsed) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         const w = canvas.width;
         const h = canvas.height;
 
         const progress = Math.min(elapsed / 12, 1);
-        const endX = progress * (w - 50) + 20;
-        const endY = h - (Math.pow(progress, 0.7) * (h - 50)) - 20;
+        const endX = progress * (w - 60) + 20;
+        const endY = h - (Math.pow(progress, 0.7) * (h - 70)) - 30;
 
         ctx.beginPath();
         ctx.moveTo(0, h);
         ctx.quadraticCurveTo(endX / 2, h, endX, endY);
         ctx.lineTo(endX, h);
         ctx.closePath();
-        
-        const gradient = ctx.createLinearGradient(0, 0, 0, h);
-        gradient.addColorStop(0, 'rgba(229, 9, 20, 0.35)');
-        gradient.addColorStop(1, 'rgba(229, 9, 20, 0.0)');
-        ctx.fillStyle = gradient;
+
+        const areaGrad = ctx.createLinearGradient(0, 0, 0, h);
+        areaGrad.addColorStop(0, 'rgba(229, 9, 20, 0.5)');
+        areaGrad.addColorStop(1, 'rgba(229, 9, 20, 0.05)');
+        ctx.fillStyle = areaGrad;
         ctx.fill();
 
         ctx.beginPath();
         ctx.moveTo(0, h);
         ctx.quadraticCurveTo(endX / 2, h, endX, endY);
         ctx.strokeStyle = '#e50914';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 3.5;
         ctx.stroke();
 
-        ctx.fillStyle = '#e50914';
-        ctx.beginPath();
-        ctx.arc(endX, endY, 6, 0, Math.PI * 2);
-        ctx.fill();
+        const tangentX = endX - (endX / 2);
+        const tangentY = endY - h;
+        const angle = Math.atan2(tangentY, tangentX) * 0.3;
+
+        drawSpribePlane(endX, endY, angle);
     }
 
-    function drawCrashCanvas() {
-        ctx.fillStyle = 'rgba(229, 9, 20, 0.12)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
+    function appendMultiplierToHistory(mult) {
+        const historyBar = document.getElementById('history-bar');
+        const newPill = document.createElement('span');
+        newPill.className = `history-pill ${mult >= 50.0 ? 'pill-purple' : 'pill-blue'}`;
+        newPill.innerText = `${mult.toFixed(2)}x`;
+        historyBar.prepend(newPill);
 
-    // Live Bets Table Management
-    let liveRoster = [];
-    function generateLivePlayers() {
-        const userPool = ['alex_99', 'chris_p', 'sarah_m', 'david_pro', 'samuel_v', 'emily_k', 'michael_x', 'jordan_b'];
-        liveRoster = [];
-        
-        for (let i = 0; i < 8; i++) {
-            const player = userPool[Math.floor(Math.random() * userPool.length)];
-            const bet = (Math.random() * 40 + 5).toFixed(2);
-            const cashoutOdds = (1.10 + Math.random() * 2.20).toFixed(2);
-            liveRoster.push({ player, bet, cashoutOdds, cashedOut: false });
+        if (historyBar.children.length > 15) {
+            historyBar.removeChild(historyBar.lastChild);
         }
-        renderTable();
     }
 
-    function simulateLiveWins(currentMult) {
-        liveRoster.forEach(row => {
-            if (!row.cashedOut && currentMult >= row.cashoutOdds) {
-                row.cashedOut = true;
+    function triggerCrash() {
+        gameState = 'CRASHED';
+        stopEngineSound();
+        playCrashSound();
+
+        multDisplay.innerText = `${targetCrashPoint.toFixed(2)}x`;
+        multDisplay.classList.add('crashed');
+
+        appendMultiplierToHistory(targetCrashPoint);
+
+        if (activeBet) {
+            activeBet = false;
+            actionBtn.classList.remove('cashout');
+            btnLabelMain.innerText = 'Bet';
+            btnLabelSub.innerText = `$${currentBetVal.toFixed(2)}`;
+        }
+
+        setTimeout(() => {
+            gameState = 'WAITING';
+            multDisplay.innerText = '1.00x';
+            multDisplay.classList.remove('crashed');
+            setTimeout(startRound, 2000);
+        }, 2500);
+    }
+
+    function handleBetAction() {
+        initAudioEngine();
+
+        if (!activeBet && gameState !== 'FLYING') {
+            if (userBalance >= currentBetVal) {
+                userBalance -= currentBetVal;
+                activeBet = true;
+                updateBalanceUI();
+                btnLabelMain.innerText = 'WAITING...';
+            } else {
+                alert('Insufficient Balance! Please click Deposit to add funds.');
+                openDepositModal();
             }
-        });
-        renderTable();
+        } else if (activeBet && gameState === 'FLYING') {
+            const winVal = currentBetVal * currentMultiplier;
+            userBalance += winVal;
+            activeBet = false;
+            updateBalanceUI();
+            playCashoutSound();
+
+            actionBtn.classList.remove('cashout');
+            btnLabelMain.innerText = 'Bet';
+            btnLabelSub.innerText = `$${currentBetVal.toFixed(2)}`;
+        }
     }
 
-    function renderTable() {
-        const tbody = document.getElementById('bets-tbody');
-        tbody.innerHTML = '';
-        liveRoster.forEach(r => {
-            const tr = document.createElement('tr');
-            if (r.cashedOut) {
-                const winAmt = (r.bet * r.cashoutOdds).toFixed(2);
-                tr.innerHTML = `
-                    <td class="col-user">${r.player}</td>
-                    <td>$${r.bet}</td>
-                    <td class="col-mult">${r.cashoutOdds}x</td>
-                    <td class="col-win">$${winAmt}</td>
+    // 4. Top 1-10 Leaderboard Data (Featuring Player 2***8 Rank #1)
+    const top10Leaderboard = [
+        { rank: 1, name: "2***8", bet: 25.00, mult: "200.00x", win: 5000.00 },
+        { rank: 2, name: "k***2", bet: 40.00, mult: "95.00x",  win: 3800.00 },
+        { rank: 3, name: "f***9", bet: 30.00, mult: "80.00x",  win: 2400.00 },
+        { rank: 4, name: "7***6", bet: 30.00, mult: "60.00x",  win: 1800.00 },
+        { rank: 5, name: "b***9", bet: 30.00, mult: "45.30x",  win: 1359.00 },
+        { rank: 6, name: "m***1", bet: 30.00, mult: "32.00x",  win: 960.00 },
+        { rank: 7, name: "x***4", bet: 30.00, mult: "20.50x",  win: 615.00 },
+        { rank: 8, name: "p***0", bet: 30.00, mult: "14.90x",  win: 447.00 },
+        { rank: 9, name: "a***7", bet: 30.00, mult: "9.40x",   win: 282.00 },
+        { rank: 10, name: "w***3", bet: 30.00, mult: "5.10x",  win: 153.00 }
+    ];
+
+    let mockPlayers = [];
+    function generateMockPlayers() {
+        const names = ['b***9', '7***6', 'f***9', '9***9', 'k***2', 'a***4'];
+        mockPlayers = names.map(name => ({
+            name,
+            bet: parseFloat((Math.random() * 50 + 5).toFixed(2)),
+            targetMult: parseFloat((2.10 + Math.random() * 3.5).toFixed(2)),
+            cashedOut: false
+        }));
+    }
+
+    function selectStatsTab(tab) {
+        activeTab = tab;
+        document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
+
+        if (tab === 'All Bets') {
+            document.getElementById('tab-all').classList.add('active');
+            document.getElementById('banner-left-label').innerText = '1847/5026 Bets';
+            updateLiveTable(currentMultiplier);
+        } else if (tab === 'Previous') {
+            document.getElementById('tab-prev').classList.add('active');
+            document.getElementById('banner-left-label').innerText = 'Previous Rounds';
+            renderPreviousTab();
+        } else if (tab === 'Top') {
+            document.getElementById('tab-top').classList.add('active');
+            document.getElementById('banner-left-label').innerText = 'Top 10 Highest Wins';
+            renderTopTab();
+        }
+    }
+
+    function renderTopTab() {
+        const container = document.getElementById('players-list');
+        container.innerHTML = '';
+        let grandWinSum = 0;
+
+        top10Leaderboard.forEach(p => {
+            grandWinSum += p.win;
+            const row = document.createElement('div');
+            row.className = 'player-row';
+            row.innerHTML = `
+                <div class="player-info">
+                    <span class="player-rank">#${p.rank}</span>
+                    <span class="player-name">${p.name}</span>
+                </div>
+                <span class="player-bet">$${p.bet.toFixed(2)}</span>
+                <span class="player-mult">${p.mult}</span>
+                <span class="player-win">$${p.win.toFixed(2)}</span>
+            `;
+            container.appendChild(row);
+        });
+
+        document.getElementById('total-win-sum').innerText = grandWinSum.toFixed(2);
+    }
+
+    function renderPreviousTab() {
+        const container = document.getElementById('players-list');
+        container.innerHTML = `
+            <div style="padding: 20px; text-align: center; color: #8f9bb3; font-size: 12px;">
+                Historical logs recorded. All multipliers guaranteed above 5.0x minimum threshold.
+            </div>
+        `;
+        document.getElementById('total-win-sum').innerText = "0.00";
+    }
+
+    function updateLiveTable(currentMult) {
+        const container = document.getElementById('players-list');
+        container.innerHTML = '';
+        let currentTotalWinSum = 0;
+
+        mockPlayers.forEach(p => {
+            if (!p.cashedOut && currentMult >= p.targetMult) {
+                p.cashedOut = true;
+            }
+
+            const row = document.createElement('div');
+            row.className = 'player-row';
+
+            if (p.cashedOut) {
+                const win = p.bet * p.targetMult;
+                currentTotalWinSum += win;
+                row.innerHTML = `
+                    <div class="player-info">
+                        <div class="player-avatar"></div>
+                        <span class="player-name">${p.name}</span>
+                    </div>
+                    <span class="player-bet">$${p.bet.toFixed(2)}</span>
+                    <span class="player-mult">${p.targetMult.toFixed(2)}x</span>
+                    <span class="player-win">$${win.toFixed(2)}</span>
                 `;
             } else {
-                tr.innerHTML = `
-                    <td class="col-user">${r.player}</td>
-                    <td>$${r.bet}</td>
-                    <td style="color:#717585;">in play</td>
-                    <td style="color:#717585;">-</td>
+                row.innerHTML = `
+                    <div class="player-info">
+                        <div class="player-avatar"></div>
+                        <span class="player-name">${p.name}</span>
+                    </div>
+                    <span class="player-bet">$${p.bet.toFixed(2)}</span>
+                    <span class="player-mult" style="color:#787d8f;">-</span>
+                    <span class="player-win" style="color:#787d8f;">-</span>
                 `;
             }
-            tbody.appendChild(tr);
+            container.appendChild(row);
         });
+
+        document.getElementById('total-win-sum').innerText = currentTotalWinSum.toFixed(2);
     }
 
-    // Standard Chat Community Logic
-    const standardChat = [
-        { u: "alex_99", m: "Great multipliers on this run!" },
-        { u: "chris_p", m: "Keeping it safe with early cashouts." },
-        { u: "sarah_m", m: "Deposit was super fast today." },
-        { u: "david_pro", m: "Good luck everyone on this round." },
-        { u: "samuel_v", m: "Always stick to your strategy." },
-        { u: "emily_k", m: "That previous round was amazing!" }
-    ];
-
-    const encouragementResponses = [
-        "Nice strategy, keep it up!",
-        "Great execution! Good luck on the next run.",
-        "Smart play! Let's get these wins.",
-        "Totally agree with you!"
-    ];
-
-    function seedChat() {
-        const chatBox = document.getElementById('chat-box');
-        chatBox.innerHTML = '';
-        standardChat.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'chat-msg';
-            div.innerHTML = `<span class="chat-user">${item.u}:</span> ${item.m}`;
-            chatBox.appendChild(div);
-        });
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function handleChatKey(e) {
-        if (e.key === 'Enter') sendUserMessage();
-    }
-
-    function sendUserMessage() {
-        const input = document.getElementById('user-chat-input');
-        const text = input.value.trim();
-        if (!text) return;
-
-        const chatBox = document.getElementById('chat-box');
-        
-        const userDiv = document.createElement('div');
-        userDiv.className = 'chat-msg user-msg';
-        userDiv.innerHTML = `<span class="chat-user">You:</span> ${text}`;
-        chatBox.appendChild(userDiv);
-
-        input.value = '';
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        // Auto-reply logic
-        setTimeout(() => {
-            const responders = ['alex_99', 'chris_p', 'sarah_m', 'david_pro'];
-            const randUser = responders[Math.floor(Math.random() * responders.length)];
-            const randReply = encouragementResponses[Math.floor(Math.random() * encouragementResponses.length)];
-
-            const replyDiv = document.createElement('div');
-            replyDiv.className = 'chat-msg';
-            replyDiv.innerHTML = `<span class="chat-user">${randUser}:</span> @You ${randReply}`;
-            chatBox.appendChild(replyDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }, 1500);
-    }
-
-    // Navigation Switch
-    function switchTab(tab) {
-        document.getElementById('tab-btn-bets').classList.remove('active');
-        document.getElementById('tab-btn-chat').classList.remove('active');
-        document.getElementById('tab-bets').style.display = 'none';
-        document.getElementById('tab-chat').style.display = 'none';
-
-        if (tab === 'bets') {
-            document.getElementById('tab-btn-bets').classList.add('active');
-            document.getElementById('tab-bets').style.display = 'block';
-        } else {
-            document.getElementById('tab-btn-chat').classList.add('active');
-            document.getElementById('tab-chat').style.display = 'block';
-        }
-    }
-
-    // USDT Deposit System (Minimum $30 & TxHash Input)
-    let depositTargetAmount = 0;
-    let timerInterval = null;
+    // Deposit Modal Flow
+    let depositTimerInterval = null;
 
     function openDepositModal() {
         document.getElementById('deposit-modal').style.display = 'flex';
-        document.getElementById('modal-step-1').style.display = 'flex';
-        document.getElementById('modal-step-2').style.display = 'none';
-        document.getElementById('amt-error').style.display = 'none';
+        document.getElementById('deposit-step-1').style.display = 'flex';
+        document.getElementById('deposit-step-2').style.display = 'none';
     }
 
     function closeDepositModal() {
         document.getElementById('deposit-modal').style.display = 'none';
-        if (timerInterval) clearInterval(timerInterval);
+        if (depositTimerInterval) clearInterval(depositTimerInterval);
     }
 
-    function goToStep2() {
-        const amtInput = document.getElementById('deposit-amt-input');
-        const amt = parseFloat(amtInput.value);
-        const errEl = document.getElementById('amt-error');
-
-        // $30 Minimum Deposit Validation
-        if (isNaN(amt) || amt < 30) {
-            errEl.style.display = 'block';
+    function goToDepositStep2() {
+        const amount = parseFloat(document.getElementById('deposit-amount-input').value);
+        if (isNaN(amount) || amount < 30) {
+            alert('Minimum deposit amount is $30.00');
             return;
         }
 
-        errEl.style.display = 'none';
-        depositTargetAmount = amt;
-        
-        document.getElementById('modal-step-1').style.display = 'none';
-        document.getElementById('modal-step-2').style.display = 'flex';
-        document.getElementById('tx-error').style.display = 'none';
-        document.getElementById('tx-id-input').value = '';
-        
-        startTimer(7200); // 2 hours timer
+        document.getElementById('deposit-step-1').style.display = 'none';
+        document.getElementById('deposit-step-2').style.display = 'flex';
+
+        startDepositCountdown();
     }
 
-    function copyAddress() {
-        const addressText = document.getElementById('usdt-address').innerText;
-        navigator.clipboard.writeText(addressText).then(() => {
-            const btn = document.getElementById('btn-copy-addr');
-            btn.innerText = '✅ Copied!';
-            setTimeout(() => {
-                btn.innerText = '📋 Copy Address';
-            }, 2000);
-        });
-    }
+    function startDepositCountdown() {
+        let durationSeconds = 2 * 60 * 60;
+        const display = document.getElementById('deposit-timer');
 
-    function startTimer(duration) {
-        let timer = duration;
-        const display = document.getElementById('timer-display');
-        if (timerInterval) clearInterval(timerInterval);
+        if (depositTimerInterval) clearInterval(depositTimerInterval);
 
-        timerInterval = setInterval(() => {
-            let hours = parseInt(timer / 3600, 10);
-            let minutes = parseInt((timer % 3600) / 60, 10);
-            let seconds = parseInt(timer % 60, 10);
+        depositTimerInterval = setInterval(() => {
+            const hours = Math.floor(durationSeconds / 3600);
+            const minutes = Math.floor((durationSeconds % 3600) / 60);
+            const seconds = durationSeconds % 60;
 
-            hours = hours < 10 ? "0" + hours : hours;
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
+            display.innerText = 
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
-            display.textContent = hours + ":" + minutes + ":" + seconds;
-
-            if (--timer < 0) {
-                clearInterval(timerInterval);
-                alert("Deposit timer expired.");
-                closeDepositModal();
+            if (--durationSeconds < 0) {
+                clearInterval(depositTimerInterval);
+                display.innerText = "EXPIRED";
             }
         }, 1000);
     }
 
-    function confirmDeposit() {
-        const txInput = document.getElementById('tx-id-input').value.trim();
-        const txErr = document.getElementById('tx-error');
-
-        // Validation for Transaction ID
-        if (!txInput || txInput.length < 8) {
-            txErr.style.display = 'block';
+    function confirmDepositPayment() {
+        const txId = document.getElementById('tx-id-input').value.trim();
+        if (txId.length < 10) {
+            alert('Please enter a valid Transaction ID / Hash.');
             return;
         }
 
-        txErr.style.display = 'none';
-        userBalance += depositTargetAmount;
+        const amount = parseFloat(document.getElementById('deposit-amount-input').value);
+        userBalance += amount;
         updateBalanceUI();
+
+        alert(`Transaction Submitted successfully! $${amount.toFixed(2)} added to your balance.`);
         closeDepositModal();
-        alert(`Payment confirmed via TxID! $${depositTargetAmount.toFixed(2)} USDT has been loaded to your balance.`);
     }
 
-    // App Startup
-    seedChat();
+    // Startup Initialization
     updateBalanceUI();
     setTimeout(startRound, 1000);
 </script>
