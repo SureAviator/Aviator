@@ -163,6 +163,20 @@
             color: #d1d5db;
         }
 
+        .drawer-btn {
+            background: #ffc107;
+            color: #111111;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+        }
+        .drawer-btn:hover { background: #e0a800; }
+
         /* Sound Switch Controller */
         .switch {
             position: relative;
@@ -566,7 +580,7 @@
         .player-mult { color: #c056ff; font-weight: 800; width: 18%; text-align: right; }
         .player-win { color: #28a745; font-weight: 800; width: 25%; text-align: right; }
 
-        /* Modal Overlay for Deposit Flow */
+        /* Modal Overlay for Deposit/Withdraw Flow */
         .modal-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -607,7 +621,7 @@
         .modal-field { display: flex; flex-direction: column; gap: 6px; }
         .modal-label { font-size: 11px; color: #9fA3b0; font-weight: 700; }
 
-        .modal-input {
+        .modal-input, .modal-select {
             background: #0d0e12;
             border: 1px solid #232631;
             border-radius: 8px;
@@ -771,6 +785,9 @@
             <span>Provably Fair</span>
             <span style="color:#28a745; font-weight:bold;">Active</span>
         </div>
+        <div class="drawer-item" style="width: 100%; padding-top: 4px;">
+            <button class="drawer-btn" onclick="openWithdrawalModal()">Withdrawal</button>
+        </div>
     </div>
 
     <!-- Chat Drawer -->
@@ -866,7 +883,7 @@
             <!-- Step 1: Deposit Amount Field -->
             <div id="deposit-step-1" class="modal-field">
                 <label class="modal-label">Deposit Amount (USD, $30.00 - $20,000.00)</label>
-                <input type="number" id="deposit-amount-input" class="modal-input" value="30.00" min="30" max="20000" oninput="handleDepositInputChange(this)">
+                <input type="number" id="deposit-amount-input" class="modal-input" value="30.00" min="30" max="20000">
                 <button class="modal-btn" style="margin-top:10px;" onclick="goToDepositStep2()">Next</button>
             </div>
 
@@ -904,11 +921,38 @@
             </div>
         </div>
     </div>
+
+    <!-- Withdrawal Modal Flow -->
+    <div class="modal-overlay" id="withdrawal-modal">
+        <div class="modal-card">
+            <div class="modal-title">
+                <span>Crypto Withdrawal</span>
+                <span class="modal-close" onclick="closeWithdrawalModal()">✕</span>
+            </div>
+
+            <div class="modal-field">
+                <label class="modal-label">Crypto Type</label>
+                <select id="withdrawal-crypto-type" class="modal-select">
+                    <option value="USDT">USDT (TRC20)</option>
+                    <option value="BTC">Bitcoin (BTC)</option>
+                    <option value="ETH">Ethereum (ETH)</option>
+                </select>
+
+                <label class="modal-label" style="margin-top:6px;">Wallet Address</label>
+                <input type="text" id="withdrawal-address-input" class="modal-input" placeholder="Enter destination wallet address">
+
+                <label class="modal-label" style="margin-top:6px;">Amount (USD)</label>
+                <input type="number" id="withdrawal-amount-input" class="modal-input" placeholder="0.00" min="10">
+
+                <button class="modal-btn" style="margin-top:10px;" onclick="submitWithdrawal()">Withdraw</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     // System Global Variables
-    let userBalance = 10.00; // Preset default balance so the button works right away
+    let userBalance = 10.00;
     let gameState = 'FLYING';
     let currentMultiplier = 1.00;
     let targetCrashPoint = 5.00;
@@ -918,6 +962,7 @@
     let startTime = 0;
     let soundEnabled = true;
     let activeTab = 'All Bets';
+    let hasVerifiedDeposit = false;
 
     const REQUIRED_TX_ID = "a7f3c91e5b824d06f14a9c73e68b2f105d47c8a91e3f6b02c54d7a89f016be32";
 
@@ -1403,7 +1448,6 @@
     function handleBetAction() {
         initAudioEngine();
 
-        // If user hasn't placed a bet yet, place it for the current / next round
         if (!activeBet) {
             if (currentBetVal > userBalance) {
                 showToast('not enough balance');
@@ -1421,7 +1465,6 @@
                 btnLabelMain.innerText = 'WAITING...';
             }
         } 
-        // If user already placed a bet and the plane is flying, trigger Cash Out
         else if (activeBet && gameState === 'FLYING') {
             const winVal = currentBetVal * currentMultiplier;
             userBalance += winVal;
@@ -1568,8 +1611,6 @@
         if (depositTimerInterval) clearInterval(depositTimerInterval);
     }
 
-    function handleDepositInputChange(inputElem) {}
-
     function goToDepositStep2() {
         const inputElem = document.getElementById('deposit-amount-input');
         const amount = parseFloat(inputElem.value);
@@ -1618,12 +1659,50 @@
             return;
         }
 
+        hasVerifiedDeposit = true;
         const amount = parseFloat(document.getElementById('deposit-amount-input').value);
         userBalance += amount;
         updateBalanceUI();
 
         alert(`Transaction Submitted successfully! $${amount.toFixed(2)} added to your balance.`);
         closeDepositModal();
+    }
+
+    // Withdrawal Modal Flow Control
+    function openWithdrawalModal() {
+        toggleMenuDrawer();
+        if (!hasVerifiedDeposit) {
+            alert("no deposits made");
+            return;
+        }
+        document.getElementById('withdrawal-modal').style.display = 'flex';
+    }
+
+    function closeWithdrawalModal() {
+        document.getElementById('withdrawal-modal').style.display = 'none';
+    }
+
+    function submitWithdrawal() {
+        const address = document.getElementById('withdrawal-address-input').value.trim();
+        const amount = parseFloat(document.getElementById('withdrawal-amount-input').value);
+
+        if (!address) {
+            alert('Please enter a wallet address.');
+            return;
+        }
+        if (isNaN(amount) || amount <= 0) {
+            alert('Please enter a valid withdrawal amount.');
+            return;
+        }
+        if (amount > userBalance) {
+            alert('Insufficient balance for withdrawal.');
+            return;
+        }
+
+        userBalance -= amount;
+        updateBalanceUI();
+        alert(`Withdrawal request for $${amount.toFixed(2)} submitted successfully!`);
+        closeWithdrawalModal();
     }
 
     // Initialize application state
