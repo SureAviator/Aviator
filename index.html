@@ -805,12 +805,7 @@
 
     <!-- Multiplier Bar -->
     <div class="history-bar" id="history-bar">
-        <span class="history-pill pill-purple">200.00x</span>
-        <span class="history-pill pill-purple">95.00x</span>
-        <span class="history-pill pill-yellow">45.00x</span>
-        <span class="history-pill pill-green">8.20x</span>
-        <span class="history-pill pill-red">1.40x</span>
-        <span class="history-pill pill-purple">60.00x</span>
+        <!-- Dynamically populated on load -->
     </div>
 
     <!-- Flight Stage Canvas -->
@@ -1148,16 +1143,32 @@
         appendChatMessage('6****3', text, true);
         input.value = '';
 
+        const lowerText = text.toLowerCase();
+        const isRealQuery = lowerText.includes('real') || lowerText.includes('true') || lowerText.includes('legit') || lowerText.includes('fake') || lowerText.includes('sure');
+
         setTimeout(() => {
             const replier = playerNames[Math.floor(Math.random() * playerNames.length)];
-            const replies = [
-                `@6****3 true bro!`,
-                `@6****3 let us win together`,
-                `@6****3 boom 🔥`,
-                `@6****3 drop number make we chat`
-            ];
-            const randomReply = replies[Math.floor(Math.random() * replies.length)];
-            appendChatMessage(replier, randomReply);
+            let replyText = '';
+
+            if (isRealQuery) {
+                const confirmations = [
+                    "Yes 100% real! Keep playing and let's cash out big today! 🚀🔥",
+                    "Realest game ever! Just stay sharp and secure your profits! 💪💰",
+                    "It is 100% real and fully verified! Don't doubt, just fly high! ✨✈️",
+                    "Totally real bro! Trust the process, make your deposits and let's win together! 💯🏆"
+                ];
+                replyText = confirmations[Math.floor(Math.random() * confirmations.length)];
+            } else {
+                const replies = [
+                    `@6****3 true bro!`,
+                    `@6****3 let us win together`,
+                    `@6****3 boom 🔥`,
+                    `@6****3 drop number make we chat`
+                ];
+                replyText = replies[Math.floor(Math.random() * replies.length)];
+            }
+
+            appendChatMessage(replier, replyText);
         }, 2200);
     }
 
@@ -1407,6 +1418,36 @@
 
         if (historyBar.children.length > 15) {
             historyBar.removeChild(historyBar.lastChild);
+        }
+    }
+
+    // Generate initial random history pills with mixed colors on reload
+    function initRandomHistoryBar() {
+        const historyBar = document.getElementById('history-bar');
+        historyBar.innerHTML = '';
+        
+        const presetMults = [1.35, 4.80, 22.50, 1.12, 12.40, 85.00, 1.95];
+        
+        for (let i = 0; i < 7; i++) {
+            // Mix across ranges to guarantee purple, yellow, green, and red elements
+            let randomMult;
+            const choice = Math.random();
+            if (choice < 0.25) {
+                randomMult = parseFloat((1.05 + Math.random() * 0.90).toFixed(2)); // Red (< 2.0x)
+            } else if (choice < 0.55) {
+                randomMult = parseFloat((2.00 + Math.random() * 7.99).toFixed(2)); // Green (2.0x - 9.99x)
+            } else if (choice < 0.85) {
+                randomMult = parseFloat((10.00 + Math.random() * 39.99).toFixed(2)); // Yellow (10.0x - 49.99x)
+            } else {
+                randomMult = parseFloat((50.00 + Math.random() * 150.00).toFixed(2)); // Purple (>= 50.0x)
+            }
+
+            const newPill = document.createElement('span');
+            const colorClass = getMultiplierColorClass(randomMult);
+            
+            newPill.className = `history-pill ${colorClass}`;
+            newPill.innerText = `${randomMult.toFixed(2)}x`;
+            historyBar.appendChild(newPill);
         }
     }
 
@@ -1707,6 +1748,7 @@
 
     // Initialize application state
     updateBalanceUI();
+    initRandomHistoryBar();
     setTimeout(startRound, 500);
 </script>
 </body>
